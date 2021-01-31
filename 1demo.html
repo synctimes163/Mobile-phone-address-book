@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue 1demo</title>
+    <script src="./js/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        {{ message }} <br>
+        {{ messageReverse }} <br>
+        <input type="text" v-model="message" v-on:click="changeBgColor" v-bind:title="message">
+    </div>
+    <script>
+        // 面向对象
+        var vm = new Vue({
+            el:"#app",
+            data: {
+                message: "hello vue!!!"
+            },
+            computed: {
+                messageReverse: function() {
+                    return this.message.split("").reverse().join("")
+                }
+            },
+            methods: {
+                changeBgColor: function(ev) {
+                    ev.target.style.background = "red";
+                }
+            },
+            mounted: function() {
+                console.log("mounted")
+            },
+            updated() {
+                console.log("一旦有数据更新的时候触发 updated")
+            },
+            watch: {
+                message: function(news, olds) {
+                    console.log(news)
+                    console.log(olds)
+                }
+            }
+        });
+
+        // Vue 组件介绍
+        // 组件系统是将一个大型的界面切分成一个一个更小的可控单元
+        // 组件是可复用，可维护的
+        // 组件具有强大的封装性，易于使用
+        // 大型应用中，组件与组件之间交互是可以解耦操作的
+
+
+    </script>
+
+</body>
+
+</html>

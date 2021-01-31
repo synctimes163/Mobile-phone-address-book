@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue 6demo</title>
+    <script src="./js/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <table>
+            <!-- 标签正确嵌套组件使用 is -->
+            <tr @click.native="show" is="my-header"></tr>
+        </table>
+
+        <!-- <my-header></my-header> -->
+    
+
+    </div>
+    <script>
+        var vm3 = new Vue({
+            el: "#app",
+            data: {
+        
+            },
+            components: {
+                "my-header": {
+                    template: `<h2 >hello myHeader</h2>`,
+                    data: function () {
+
+                        return {
+                      
+                        }
+
+                    },
+                }
+            },
+            methods: {
+                show: function() {
+                    console.log("show")
+                }
+            },
+        })
+        // 正确的嵌套方式与 is 属性
+        // 单向数据流
+        // 数据的作用域
+        // 原生事件 .native
+        // $refs  this.$refs.myTitle.innerHTML = str // DOM 操作，非常特殊的情况下使用，数据较难修改的时候
+
+    </script>
+
+</body>
+
+</html>

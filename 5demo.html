@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue 5demo</title>
+    <script src="./js/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <my-header :list="list"></my-header>
+        <!-- 调试组件默认值，记得 不要绑定  :list -->
+        <my-header></my-header>
+
+    </div>
+    <script>
+        var vm3 = new Vue({
+            el: "#app",
+            data: {
+                message:"hello my-header",
+                list: ["第一项", "第二项", "第三项"]
+            },
+            components: {
+                "my-header": {
+                 
+                        template: `<div> 
+                        <h2 ref="myTitle" >标题 {{ nowMessage }}   </h2>
+                            <ul>
+                                <li v-for="item in list">{{ item }}</li>
+                            </ul>
+                            <my-nav @changeEvents="getChildContent" :list="list"></my-nav>
+                        </div>`,
+                    data: function () {
+
+                        return {
+                            nowMessage: "hello myHeader!!!",
+                            // list: ["第一项", "第二项", "第三项"]
+                        }
+
+                    },
+                    // 父组件向子组件进行通信操作 props
+                    // props: [
+                    //     'list'
+                    // ],
+                    props: {
+                        'list': {
+                            type: Array,
+                            default: function() {
+                                // 需要函数
+                                return  ["第一项1", "第二项2", "第三项3"]
+                            }
+                        }
+                    },
+                    methods: {
+                        getChildContent: function(str) {
+                            console.log(str)
+
+                            this.nowMessage = str; // 数据操作，尽量选用这种
+
+                            this.$refs.myTitle.innerHTML = str // DOM 操作，非常特殊的情况下使用，数据较难修改的时候
+
+                        }
+                    },
+                    components: {
+                        "my-nav": {
+                            template: `<ul>
+                                <li @click="getContent" v-for="item in list">{{ item }}</li>
+                            </ul>`,
+                            props: [
+                                "list"
+                            ],
+                            methods: {
+                                getContent: function(ev) {
+                                    // console.log(this)
+                                    // console.log(ev.target.innerHTML)
+
+
+                                    this.$emit("changeEvents", ev.target.innerHTML) 
+
+                                }
+                            },
+                        }
+                    }
+
+                }
+            }
+        })
+
+
+    </script>
+
+</body>
+
+</html>

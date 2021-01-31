@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue 6demo</title>
+    <script src="./js/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div>
+            {{count}}
+
+        </div>
+        <my-addbtn :count="count"></my-addbtn>
+        <my-removebtn :count="count"></my-removebtn>
+    
+
+    </div>
+    <script>
+
+        var busVm = new Vue({});
+
+        var vm3 = new Vue({
+            el: "#app",
+            data: {
+        
+                count: 0,
+            },
+            mounted() {
+                busVm.$on("changeEvents", function(num) {
+                    this.count = num;
+                }.bind(this));
+            },
+            components: {
+                "my-addbtn": {
+                    template: `<button @click="setCount">+</button>`,
+                    props:["count"],
+                    methods: {
+                        setCount: function() {
+                            busVm.$emit("changeEvents",this.count + 1)
+                        }
+                    },
+                    // data: function () {
+
+                    //     return {
+                    //         message:  "hello myHeader!!!"
+                    //     }
+
+                    // },
+                    // mounted() {
+                    //     busVm.$on("changeEvents", function(str){
+                    //         this.message = str;
+                    //     }.bind(this));
+                    // },
+                },
+                "my-removebtn": {
+                    template: `<button @click="setCount">-</button>`,
+                    props:["count"],
+                    methods: {
+                        setCount: function() {
+                            busVm.$emit("changeEvents",this.count - 1)
+                        }
+                    },
+             
+                },
+            },
+            methods: {
+                show: function() {
+                    console.log("show")
+                }
+            },
+        })
+       /*
+        1. 空实例与自定义事件
+        $emit
+        $on
+
+        2.Vuex 状态管理
+        state
+        mutations
+        commit
+       
+       */
+    </script>
+
+</body>
+
+</html>
