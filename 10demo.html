@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue 10demo</title>
+	<script type="text/javascript" src="./js/vue.js"></script>
+
+		<script type="text/javascript" src="./js/vuex.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+<!-- 
+        <my-header>
+            <h2>我是标题</h2>
+        </my-header> -->
+
+<!--         
+        <my-header>
+            <h2>我是标题</h2>
+        </my-header> -->
+   
+        <!-- <my-header>
+            <my-title></my-title>
+        </my-header> -->
+
+
+        <my-header>
+            <button slot="left">《</button>
+            <button slot="right">》</button>
+        </my-header>
+    </div>
+    <script>
+
+        var vm = new Vue({
+            el: "#app",
+            components: {
+                // 单 <slot>标签
+                // "my-header": {
+                //     template: `<div>我是头部 <slot>我是标题</slot></div>`,
+                // },
+                // 多 <slot>标签
+                "my-header": {
+                    template: `<div><slot name="left"></slot>我是头部 <slot name="right"></slot></div>`,
+                },
+                "my-title": {
+                    template: `<h2>我是标题</h2>`,
+                },
+            },
+        })
+       /*
+        为了让组件可以组合，我们需要一种方式来混合父组件的内容与子组件自己的模板，这个过程被称为内容分发
+        
+        插槽
+
+        单 <slot>标签
+        多 <slot>标签
+        <slot>默认值
+
+            // 重点：组件可以组合
+       
+       */
+    </script>
+
+</body>
+
+</html>

@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vue 8demo</title>
-    <script src="./js/vue.js"></script>
+    <title>vue 9demo</title>
+	<script type="text/javascript" src="./js/vue.js"></script>
+
+		<script type="text/javascript" src="./js/vuex.js"></script>
 </head>
 
 <body>
@@ -22,56 +24,53 @@
     </div>
     <script>
 
-        var busVm = new Vue({});
+        // var busVm = new Vue({});
+
+        // 记得 new 单词， new Vuex.Store 而非 Vuex.Store
+        var store = new Vuex.Store({
+            state: {
+                count: 0
+            },
+            mutations: {
+                add: function(state) {
+                    state.count++
+                },
+                remove: function(state) {
+                    state.count--
+                }
+            }
+        })
 
         var vm3 = new Vue({
             el: "#app",
-            data: {
-        
-                count: 0,
-            },
-            mounted() {
-                busVm.$on("changeEvents", function(num) {
-                    this.count = num;
-                }.bind(this));
-            },
+            computed:{
+				count : function(){
+					return store.state.count;
+				}
+			},
             components: {
                 "my-addbtn": {
                     template: `<button @click="setCount">+</button>`,
-                    props:["count"],
+                    // props:["count"],
                     methods: {
                         setCount: function() {
-                            busVm.$emit("changeEvents",this.count + 1)
+                            // busVm.$emit("changeEvents",this.count + 1)
+                            store.commit("add")
                         }
                     },
-                    // data: function () {
 
-                    //     return {
-                    //         message:  "hello myHeader!!!"
-                    //     }
-
-                    // },
-                    // mounted() {
-                    //     busVm.$on("changeEvents", function(str){
-                    //         this.message = str;
-                    //     }.bind(this));
-                    // },
                 },
                 "my-removebtn": {
                     template: `<button @click="setCount">-</button>`,
-                    props:["count"],
+                    // props:["count"],
                     methods: {
                         setCount: function() {
-                            busVm.$emit("changeEvents",this.count - 1)
+                            // busVm.$emit("changeEvents",this.count - 1)
+                            store.commit("remove")
                         }
                     },
              
                 },
-            },
-            methods: {
-                show: function() {
-                    console.log("show")
-                }
             },
         })
        /*

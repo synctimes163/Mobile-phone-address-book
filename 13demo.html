@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>vue 12demo</title>
+	<script type="text/javascript" src="./js/vue.js"></script>
+    <script type="text/javascript" src="./js/vuex.js"></script>
+</head>
+<style lang="">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    body {
+        height:2000px ;
+    }
+
+    #header {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        background-color: #666;
+
+        color: #fff;
+        text-align: center;
+        z-index: 100;
+    }
+
+    #header button {
+        height: 100%;
+        padding: 0 5px;
+    }
+
+    #header button:nth-of-type(1) {
+        float: left;
+    }
+
+    #header button:nth-of-type(2) {
+        float: right;
+    }
+
+
+    #list{ position: relative; top: 40px; overflow: hidden;}
+
+    #list .list_user p { background-color: #ccc; padding-left: 10px;}
+    #list .list_user ul li{ height: 50px; line-height: 50px; border-bottom: solid thin #ccc; padding-left: 10px;}
+
+    #list .list_index { position:fixed; right:10px; top: 50%; font-size: 20px;}
+    #list .list_index li { margin: 5px 0;}
+</style>
+<body>
+
+    <div id="app">
+        <my-header custom-title="通讯录" custom-fixed>
+            <button @touchstart="backBtn" slot="left">返回</button>
+            <button @touchstart="homeBtn" slot="right">主页</button>
+        </my-header>
+
+        <my-list :user-data="userData"></my-list>
+
+        <!-- <div id="list">
+            <ul class="list_user">
+                <li>
+                    <p>A</p>
+                    <ul>
+                        <li>a1</li>
+                        <li>a2</li>
+                        <li>a3</li>
+                    </ul>
+                </li>
+                <li>
+                    <p>B</p>
+                    <ul>
+                        <li>b1</li>
+                        <li>b2</li>
+                        <li>b3</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="list_index">
+                <li>A</li>
+                <li>B</li>
+            </ul>
+        </div> -->
+
+      
+    </div>
+    <script>
+
+        var userData = [
+            {"index": "A", "users":[
+                {
+                    "name" : "a1", "tel": "13011112222"
+                },
+                {
+                    "name" : "a2", "tel": "13011112223"
+                },
+                {
+                    "name" : "a3", "tel": "13011112224"
+                },
+            ]},
+            {"index": "B", "users":[
+                {
+                    "name" : "b1", "tel": "13011112225"
+                },
+                {
+                    "name" : "b2", "tel": "13011112226"
+                },
+                {
+                    "name" : "b3", "tel": "13011112227"
+                },
+            ]},
+            {"index": "C", "users":[
+                {
+                    "name" : "c1", "tel": "13011112222"
+                },
+                {
+                    "name" : "c2", "tel": "13011112222"
+                },
+                {
+                    "name" : "c3", "tel": "13011112222"
+                },
+            ]},
+            {"index": "D", "users":[
+                {
+                    "name" : "d1", "tel": "13011112222"
+                },
+                {
+                    "name" : "d2", "tel": "13011112222"
+                },
+                {
+                    "name" : "d3", "tel": "13011112222"
+                },
+            ]},
+            {"index": "E", "users":[
+                {
+                    "name" : "e1", "tel": "13011112222"
+                },
+                {
+                    "name" : "e2", "tel": "13011112222"
+                },
+                {
+                    "name" : "e3", "tel": "13011112222"
+                },
+            ]},
+            {"index": "F", "users":[
+                {
+                    "name" : "f1", "tel": "13011112222"
+                },
+                {
+                    "name" : "f2", "tel": "13011112222"
+                },
+                {
+                    "name" : "f3", "tel": "13011112222"
+                },
+            ]},
+        ]
+
+        Vue.component("my-header", {
+            template: `<div id="header" :style="{'position': customFixed ? 'fixed' : 'absolute'}">
+                            <slot name="left">返回</slot>
+                            {{customTitle}}
+                            <slot name="right">主页</slot>
+                        </div>`,
+            props: {
+                // 转驼峰的方式 custom-title => customTitle
+                "customTitle": {
+                    type: String,
+                    default: "标题"
+                },
+                "customFixed": {
+                    type: Boolean,
+                    default: false
+                }
+            }
+        })
+        Vue.component("my-list", {
+            template: `<div id="list">
+                            <ul class="list_user" ref="listUser">
+                                <li v-for="item in userData">
+                                    <p>{{item.index}}</p>
+                                    <ul>
+                                        <li v-for="user in item.users">{{user.name}}</li>
+                                    </ul>
+                                </li>
+                               
+                            </ul>
+
+                            <ul class="list_index" ref="listIndex">
+                                <li @touchstart="setScroll" v-for="item in userIndex">{{ item }}</li>
+                               
+                            </ul>
+                        </div>`,
+            props: {
+                "user-data": {
+                    type:Array,
+                    default: function() {
+                        return []
+                    }
+                }
+            },
+            computed: {
+                userIndex: function() {
+                    return this.filterIndex(
+                        this.userData
+                    ) 
+                }
+            },
+            methods: {
+                filterIndex: function(data) {
+                    var result = [];
+
+                    for(var i=0; i<data.length; i++) {
+                        if(data[i].index) {
+                            result.push(data[i].index)
+                        }
+                    }
+
+                    return result;
+                },
+                setListIndexPos: function() {
+
+                    let iH = this.$refs.listIndex.offsetHeight;
+                    this.$refs.listIndex.style.marginTop = - iH / 2 + "px"
+
+
+                },
+                setScroll: function(ev) {
+                    
+                    // console.log( ev.target.innerHTML)
+                   var aP =  this.$refs.listUser.getElementsByTagName("p");
+                //    console.log( aP)
+                   for(var i= 0; i<aP.length; i++) {
+                       if(aP[i].innerHTML == ev.target.innerHTML) {
+                        //    console.log(document.documentElement.scrollTop, aP[i].scrollTop, aP[i])
+                           document.documentElement.scrollTop = aP[i].offsetTop;
+                           
+                        //    document.body.scrollTop = aP[i].scrollTop;
+                       }
+                   }
+                }
+            },
+            mounted: function() {
+                this.setListIndexPos();
+            },
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                userData: userData
+            },
+            methods: {
+                backBtn: function() {
+                    alert("backBtn")
+                },
+                homeBtn: function() {
+                    alert("homeBtn")
+                },
+            },
+        })
+       /*
+        
+        头部组件，列表组件，弹出组件
+       
+       */
+    </script>
+
+</body>
+
+</html>
