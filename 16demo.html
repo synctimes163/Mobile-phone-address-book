@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>vue 15demo</title>
+	<script type="text/javascript" src="./js/vue.js"></script>
+    <script type="text/javascript" src="./js/vuex.js"></script>
+</head>
+<style lang="">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    body {
+        height:2000px ;
+    }
+
+    #header {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        background-color: #666;
+
+        color: #fff;
+        text-align: center;
+        z-index: 100;
+    }
+
+    #header button {
+        height: 100%;
+        padding: 0 5px;
+    }
+
+    #header button:nth-of-type(1) {
+        float: left;
+    }
+
+    #header button:nth-of-type(2) {
+        float: right;
+    }
+
+
+    #list{ position: relative; top: 40px; overflow: hidden;}
+
+    #list .list_user p { background-color: #ccc; padding-left: 10px;}
+    #list .list_user ul li{ height: 50px; line-height: 50px; border-bottom: solid thin #ccc; padding-left: 10px;}
+
+    #list .list_index { position:fixed; right:10px; top: 50%; font-size: 20px;}
+    #list .list_index li { margin: 5px 0;}
+
+
+    #alert{width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);position: fixed;left: 0;top: 0;z-index: 20;display: flex;}
+    #alert .alert_content{ width: 200px; height: 150px; background-color: white; border-radius: 5px; margin: auto; position: relative;}
+    #alert .alert_title{padding: 5px;border-bottom: 1px #ccc solid;}
+    #alert .alert_body{height: 50px; line-height: 50px; text-align: center;}
+    #alert .alert_btn{position: absolute;right: 0; bottom: 0;}
+    #alert .alert_btn button{margin: 5px; padding: 5px;}
+</style>
+<body>
+
+    <div id="app">
+        <my-header custom-title="通讯录" custom-fixed>
+            <button @touchstart="backBtn" slot="left">返回</button>
+            <button @touchstart="homeBtn" slot="right">主页</button>
+        </my-header>
+
+        <my-list :user-data="userData"></my-list>
+        <!-- <my-alert  custom-title="呼叫">
+
+            <div class="alert_btn">
+                <button @touchstart="confirmBtn">确定</button>
+                <button @touchstart="cancelBtn">取消</button>
+            </div>
+        </my-alert> -->
+    </div>
+    <script>
+
+        var userData = [
+            {"index": "A", "users":[
+                {
+                    "name" : "a1", "tel": "13011112222"
+                },
+                {
+                    "name" : "a2", "tel": "13011112223"
+                },
+                {
+                    "name" : "a3", "tel": "13011112224"
+                },
+            ]},
+            {"index": "B", "users":[
+                {
+                    "name" : "b1", "tel": "13011112225"
+                },
+                {
+                    "name" : "b2", "tel": "13011112226"
+                },
+                {
+                    "name" : "b3", "tel": "13011112227"
+                },
+            ]},
+            {"index": "C", "users":[
+                {
+                    "name" : "c1", "tel": "13011112228"
+                },
+                {
+                    "name" : "c2", "tel": "13011112229"
+                },
+                {
+                    "name" : "c3", "tel": "13011112282"
+                },
+            ]},
+            {"index": "D", "users":[
+                {
+                    "name" : "d1", "tel": "13011112452"
+                },
+                {
+                    "name" : "d2", "tel": "17511116222"
+                },
+                {
+                    "name" : "d3", "tel": "13019012222"
+                },
+            ]},
+            {"index": "E", "users":[
+                {
+                    "name" : "e1", "tel": "13011166222"
+                },
+                {
+                    "name" : "e2", "tel": "13011132222"
+                },
+                {
+                    "name" : "e3", "tel": "13011172222"
+                },
+            ]},
+            {"index": "F", "users":[
+                {
+                    "name" : "f1", "tel": "13011512222"
+                },
+                {
+                    "name" : "f2", "tel": "13031112222"
+                },
+                {
+                    "name" : "f3", "tel": "12011112222"
+                },
+            ]},
+        ]
+
+
+        var busVM = new Vue({})
+
+        Vue.component("my-header", {
+            template: `<div id="header" :style="{'position': customFixed ? 'fixed' : 'absolute'}">
+                            <slot name="left">返回</slot>
+                            {{customTitle}}
+                            <slot name="right">主页</slot>
+                        </div>`,
+            props: {
+                // 转驼峰的方式 custom-title => customTitle
+                "customTitle": {
+                    type: String,
+                    default: "标题"
+                },
+                "customFixed": {
+                    type: Boolean,
+                    default: false
+                }
+            }
+        })
+        Vue.component("my-list", {
+            template: `<div id="list">
+                            <ul class="list_user" ref="listUser" @touchmove="bMove=true">
+                                <li v-for="item in userData">
+                                    <p>{{item.index}}</p>
+                                    <ul>
+                                        <li @touchstart="showTel(user.tel)" v-for="user in item.users">{{user.name}}</li>
+                                    </ul>
+                                </li>
+                               
+                            </ul>
+
+                            <ul class="list_index" ref="listIndex">
+                                <li @touchstart="setScroll" v-for="item in userIndex">{{ item }}</li>
+                               
+                            </ul>
+                        </div>`,
+            data:function( ){
+                return {
+                    bMove: false
+                }
+            },
+            props: {
+                "user-data": {
+                    type:Array,
+                    default: function() {
+                        return []
+                    }
+                }
+            },
+            computed: {
+                userIndex: function() {
+                    return this.filterIndex(
+                        this.userData
+                    ) 
+                }
+            },
+            methods: {
+                filterIndex: function(data) {
+                    var result = [];
+
+                    for(var i=0; i<data.length; i++) {
+                        if(data[i].index) {
+                            result.push(data[i].index)
+                        }
+                    }
+
+                    return result;
+                },
+                setListIndexPos: function() {
+
+                    let iH = this.$refs.listIndex.offsetHeight;
+                    this.$refs.listIndex.style.marginTop = - iH / 2 + "px"
+
+
+                },
+                setScroll: function(ev) {
+                    
+                    // console.log( ev.target.innerHTML)
+                   var aP =  this.$refs.listUser.getElementsByTagName("p");
+                //    console.log( aP)
+                   for(var i= 0; i<aP.length; i++) {
+                       if(aP[i].innerHTML == ev.target.innerHTML) {
+                        //    console.log(document.documentElement.scrollTop, aP[i].scrollTop, aP[i])
+                           document.documentElement.scrollTop = aP[i].offsetTop;   // 这里不是  aP[i].scrollTop ，而是元素的  aP[i].offsetTop
+                           
+                        //    document.body.scrollTop = aP[i].offsetTop;
+                       }
+                   }
+                },
+                showTel: function(tel) {
+                 
+
+                    if(!this.bMove) {
+                        console.log(tel)
+
+                        // busVM.$emit("changeEvent", tel)
+
+                        myAlert({
+                            title:"呼叫",
+                            body: tel,
+                            confirm: function() {
+                                alert("confirm")
+                            },
+                            cancel: function() {
+                                // alert("cancel")
+
+                                document.body.removeChild(
+                                    document.getElementById("alert")
+                                )
+
+                            },
+                        })
+                    }else {
+                        this.bMove = false;
+                    }
+                }
+            },
+            mounted: function() {
+                this.setListIndexPos();
+            },
+        })
+/*
+
+        Vue.component("my-alert", {
+            template: `<div id="alert" ref="alert">
+                <div class="alert_content">
+                    <div class="alert_title">{{ customTitle }}</div>
+                    <div class="alert_body">{{ customBody }}</div>
+                    <slot></slot>
+                </div>
+            </div>`,
+            props: {
+                // 转驼峰的方式 custom-title => customTitle
+                "customTitle": {
+                    type: String,
+                    default: "弹窗"
+                },
+         
+            },
+            data: function() {
+                return {
+                    "customBody": ""
+                }
+            },
+            mounted() {
+                busVM.$on("changeEvent" , function(tel) {
+                    this.customBody = tel;
+
+                    this.$refs.alert.style.display="flex"
+                }.bind(this))
+            },
+        })
+
+        */
+
+
+        var myAlert = (function() {
+            var defaults = {
+                title: "弹窗",
+                body: "",
+                confirm: null,
+                cancel: null, 
+            }
+
+
+            var alertCom = {
+                template: `<div id="alert" ref="alert">
+                    <div class="alert_content">
+                        <div class="alert_title">{{ customTitle }}</div>
+                        <div class="alert_body">{{ customBody }}</div>
+                        <div class="alert_btn">
+                            <button v-if="confirm" @touchstart="confirm">确定</button>
+                            <button v-if="cancel" @touchstart="cancel">取消</button>
+                        </div>
+                    </div>
+                </div>`,
+            }
+
+            var MyComponent = Vue.extend(alertCom)
+
+            return function(opts) {
+
+                console.log("opts=>", opts)
+                for(var attr in opts) {
+                    defaults[attr] = opts[attr]
+                }
+
+                var vm = new MyComponent({
+                    el: document.createElement("div"),
+                    data: {
+                        customTitle: defaults.title,
+                        customBody: defaults.body,
+                        confirm: defaults.confirm,
+                        cancel: defaults.cancel,
+                    }
+                })
+
+                document.body.appendChild(
+                    vm.$el
+                ) 
+            }
+        })();
+
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                userData: userData
+            },
+            methods: {
+                backBtn: function() {
+                    alert("backBtn")
+                },
+                homeBtn: function() {
+                    alert("homeBtn")
+                },
+                // confirmBtn: function() {
+
+                // },
+                // cancelBtn: function() {
+
+                //     console.log(this)
+
+                //     this.$children[2].$el.style.display = "none"
+
+                // },
+            },
+        })
+       /*
+        
+        多组件遇到的问题
+
+        所有组件都写到了一起，耦合性太强，程序容易起冲突，具体如下
+
+        全局定义 强制要求每个 component 中的命名不得重复
+        字符串模板 缺乏语法高亮，在HTML有多行的时候，需要用到丑陋的 \
+        不支持css 意味着当HTML 和 JavaScript 组件化时，css 明显被遗漏
+
+        没有构建步骤，限制只能使用 HTML 和  Ess JavaScript ，而不能使用预处理器，如 Pug 和 Babel
+
+
+        webpack 工具
+        四个核心概念：
+
+        入口（entry），出口（output），模块加载（loader），插件（plugins）
+
+
+        webpack 基础使用
+
+        npm init
+
+        npm install --save-dev webpack@2.6.0
+        
+        webpack entry.js  bundle.js;  //  webpack entry.js -o bundle.js  备注 -o ， 如果bundle.js文件不存在-o才生效
+        ----------------------
+            webpack entry.js -o bundle.js
+            Hash: f7ca9a08c9bf6c4a30f6
+            Version: webpack 4.42.0
+            Time: 303ms
+            Built at: 2021-02-01 16:17:30
+                Asset       Size  Chunks             Chunk Names
+            bundle.js  930 bytes       0  [emitted]  main
+            Entrypoint main = bundle.js
+            [0] ./entry.js 25 bytes {0} [built]
+
+            WARNING in configuration
+            The 'mode' option has not been set, webpack will fallback to 'production' for this value. Set 'mode' option to 'development' or 'production' to enable defaults for each environment.        
+            You can also set it to 'none' to disable any default behavior. Learn more: https://webpack.js.org/configuration/mode/
+        ---------------------
+        style-loader
+
+        css-loader
+
+
+
+
+       
+       */
+    </script>
+
+</body>
+
+</html>

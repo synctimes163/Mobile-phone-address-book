@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-    <title>vue 13demo</title>
+    <title>vue 15demo</title>
 	<script type="text/javascript" src="./js/vue.js"></script>
     <script type="text/javascript" src="./js/vuex.js"></script>
 </head>
@@ -54,6 +54,14 @@
 
     #list .list_index { position:fixed; right:10px; top: 50%; font-size: 20px;}
     #list .list_index li { margin: 5px 0;}
+
+
+    #alert{width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);position: fixed;left: 0;top: 0;z-index: 20;display: flex;}
+    #alert .alert_content{ width: 200px; height: 150px; background-color: white; border-radius: 5px; margin: auto; position: relative;}
+    #alert .alert_title{padding: 5px;border-bottom: 1px #ccc solid;}
+    #alert .alert_body{height: 50px; line-height: 50px; text-align: center;}
+    #alert .alert_btn{position: absolute;right: 0; bottom: 0;}
+    #alert .alert_btn button{margin: 5px; padding: 5px;}
 </style>
 <body>
 
@@ -64,34 +72,13 @@
         </my-header>
 
         <my-list :user-data="userData"></my-list>
+        <!-- <my-alert  custom-title="呼叫">
 
-        <!-- <div id="list">
-            <ul class="list_user">
-                <li>
-                    <p>A</p>
-                    <ul>
-                        <li>a1</li>
-                        <li>a2</li>
-                        <li>a3</li>
-                    </ul>
-                </li>
-                <li>
-                    <p>B</p>
-                    <ul>
-                        <li>b1</li>
-                        <li>b2</li>
-                        <li>b3</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <ul class="list_index">
-                <li>A</li>
-                <li>B</li>
-            </ul>
-        </div> -->
-
-      
+            <div class="alert_btn">
+                <button @touchstart="confirmBtn">确定</button>
+                <button @touchstart="cancelBtn">取消</button>
+            </div>
+        </my-alert> -->
     </div>
     <script>
 
@@ -120,49 +107,52 @@
             ]},
             {"index": "C", "users":[
                 {
-                    "name" : "c1", "tel": "13011112222"
+                    "name" : "c1", "tel": "13011112228"
                 },
                 {
-                    "name" : "c2", "tel": "13011112222"
+                    "name" : "c2", "tel": "13011112229"
                 },
                 {
-                    "name" : "c3", "tel": "13011112222"
+                    "name" : "c3", "tel": "13011112282"
                 },
             ]},
             {"index": "D", "users":[
                 {
-                    "name" : "d1", "tel": "13011112222"
+                    "name" : "d1", "tel": "13011112452"
                 },
                 {
-                    "name" : "d2", "tel": "13011112222"
+                    "name" : "d2", "tel": "17511116222"
                 },
                 {
-                    "name" : "d3", "tel": "13011112222"
+                    "name" : "d3", "tel": "13019012222"
                 },
             ]},
             {"index": "E", "users":[
                 {
-                    "name" : "e1", "tel": "13011112222"
+                    "name" : "e1", "tel": "13011166222"
                 },
                 {
-                    "name" : "e2", "tel": "13011112222"
+                    "name" : "e2", "tel": "13011132222"
                 },
                 {
-                    "name" : "e3", "tel": "13011112222"
+                    "name" : "e3", "tel": "13011172222"
                 },
             ]},
             {"index": "F", "users":[
                 {
-                    "name" : "f1", "tel": "13011112222"
+                    "name" : "f1", "tel": "13011512222"
                 },
                 {
-                    "name" : "f2", "tel": "13011112222"
+                    "name" : "f2", "tel": "13031112222"
                 },
                 {
-                    "name" : "f3", "tel": "13011112222"
+                    "name" : "f3", "tel": "12011112222"
                 },
             ]},
         ]
+
+
+        var busVM = new Vue({})
 
         Vue.component("my-header", {
             template: `<div id="header" :style="{'position': customFixed ? 'fixed' : 'absolute'}">
@@ -184,11 +174,11 @@
         })
         Vue.component("my-list", {
             template: `<div id="list">
-                            <ul class="list_user" ref="listUser">
+                            <ul class="list_user" ref="listUser" @touchmove="bMove=true">
                                 <li v-for="item in userData">
                                     <p>{{item.index}}</p>
                                     <ul>
-                                        <li v-for="user in item.users">{{user.name}}</li>
+                                        <li @touchstart="showTel(user.tel)" v-for="user in item.users">{{user.name}}</li>
                                     </ul>
                                 </li>
                                
@@ -199,6 +189,11 @@
                                
                             </ul>
                         </div>`,
+            data:function( ){
+                return {
+                    bMove: false
+                }
+            },
             props: {
                 "user-data": {
                     type:Array,
@@ -246,12 +241,121 @@
                         //    document.body.scrollTop = aP[i].offsetTop;
                        }
                    }
+                },
+                showTel: function(tel) {
+                 
+
+                    if(!this.bMove) {
+                        console.log(tel)
+
+                        // busVM.$emit("changeEvent", tel)
+
+                        myAlert({
+                            title:"呼叫",
+                            body: tel,
+                            confirm: function() {
+                                alert("confirm")
+                            },
+                            cancel: function() {
+                                alert("cancel")
+
+                                document.body.removeChild(
+                                    document.getElementById("alert")
+                                )
+
+                            },
+                        })
+                    }else {
+                        this.bMove = false;
+                    }
                 }
             },
             mounted: function() {
                 this.setListIndexPos();
             },
         })
+/*
+
+        Vue.component("my-alert", {
+            template: `<div id="alert" ref="alert">
+                <div class="alert_content">
+                    <div class="alert_title">{{ customTitle }}</div>
+                    <div class="alert_body">{{ customBody }}</div>
+                    <slot></slot>
+                </div>
+            </div>`,
+            props: {
+                // 转驼峰的方式 custom-title => customTitle
+                "customTitle": {
+                    type: String,
+                    default: "弹窗"
+                },
+         
+            },
+            data: function() {
+                return {
+                    "customBody": ""
+                }
+            },
+            mounted() {
+                busVM.$on("changeEvent" , function(tel) {
+                    this.customBody = tel;
+
+                    this.$refs.alert.style.display="flex"
+                }.bind(this))
+            },
+        })
+
+        */
+
+
+        var myAlert = (function() {
+            var defaults = {
+                title: "弹窗",
+                body: "",
+                confirm: null,
+                cancel: null, 
+            }
+
+
+            var alertCom = {
+                template: `<div id="alert" ref="alert">
+                    <div class="alert_content">
+                        <div class="alert_title">{{ customTitle }}</div>
+                        <div class="alert_body">{{ customBody }}</div>
+                        <div class="alert_btn">
+                            <button v-if="confirm" @touchstart="confirm">确定</button>
+                            <button v-if="cancel" @touchstart="cancel">取消</button>
+                        </div>
+                    </div>
+                </div>`,
+            }
+
+            var MyComponent = Vue.extend(alertCom)
+
+            return function(opts) {
+
+                console.log("opts=>", opts)
+                for(var attr in opts) {
+                    defaults[attr] = opts[attr]
+                }
+
+                var vm = new MyComponent({
+                    el: document.createElement("div"),
+                    data: {
+                        customTitle: defaults.title,
+                        customBody: defaults.body,
+                        confirm: defaults.confirm,
+                        cancel: defaults.cancel,
+                    }
+                })
+
+                document.body.appendChild(
+                    vm.$el
+                ) 
+            }
+        })();
+
         var vm = new Vue({
             el: "#app",
             data: {
@@ -264,11 +368,25 @@
                 homeBtn: function() {
                     alert("homeBtn")
                 },
+                // confirmBtn: function() {
+
+                // },
+                // cancelBtn: function() {
+
+                //     console.log(this)
+
+                //     this.$children[2].$el.style.display = "none"
+
+                // },
             },
         })
        /*
         
-        头部组件，列表组件，弹出组件
+        模块化
+        默认参数与配置参数
+        Vue.extend()
+
+
        
        */
     </script>
