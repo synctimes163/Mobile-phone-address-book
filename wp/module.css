@@ -1,3 +1,27 @@
-body {
+/* body {
     background-color: red;
+} */
+
+
+/*
+
+body {
+    background: url(./logo.jpg);
+}
+WARNING in configuration
+The 'mode' option has not been set, webpack will fallback to 'production' for this value. Set 'mode' option to 'development' or 'production' to enable defaults for each environment.        
+You can also set it to 'none' to disable any default behavior. Learn more: https://webpack.js.org/configuration/mode/
+
+ERROR in ./logo.jpg 1:0
+Module parse failed: Unexpected character '�' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+(Source code omitted for this binary file)
+ @ ./module.css (./node_modules/css-loader/dist/cjs.js!./module.css) 4:0-55 6:73-102
+ @ ./module.css
+ @ ./entry.js 
+ --------------------需要文件加载器 file-loader ; npm install --save-dev file-loader
+ */
+
+body {
+    background: url(./logo.jpg);
 }

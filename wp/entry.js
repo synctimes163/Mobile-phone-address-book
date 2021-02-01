@@ -2,7 +2,6 @@ var str = "hello webpack"
 
  str = require("./module.js");  // 需要重新编译  webpack entry.js -o bundle.js
 
-
 //  require("./module.css");
 // 没有加载器报错,请在项目中加载引入 npm install --save-dev css-loader style-loader require("style-loader!css-loader!./module.css");
 // ------------------
@@ -15,7 +14,10 @@ var str = "hello webpack"
 //  @ ./entry.js 6:1-24
 //  -------------------
 
-require("style-loader!css-loader!./module.css");
+// require("style-loader!css-loader!./module.css");
+
+
+require("./module.css")
 
 window.onload = function() {
     var div = document.createElement("div");

@@ -1,0 +1,82 @@
+Html Webpack Plugin:
+<pre>
+  TypeError: compilation.templatesPlugin is not a function
+  
+  - SetVarMainTemplatePlugin.js:17 SetVarMainTemplatePlugin.apply
+    [wp]/[webpack]/lib/SetVarMainTemplatePlugin.js:17:15
+  
+  - Tapable.js:79 Compilation.apply
+    [npm]/[webpack]/[tapable]/lib/Tapable.js:79:16
+  
+  - util.js:89 Compilation.deprecated [as apply]
+    internal/util.js:89:15
+  
+  - LibraryTemplatePlugin.js:40 
+    [wp]/[webpack]/lib/LibraryTemplatePlugin.js:40:18
+  
+  
+  - Hook.js:154 SyncHook.lazyCompileHook
+    [npm]/[webpack]/[tapable]/lib/Hook.js:154:20
+  
+  - Compiler.js:630 Compiler.newCompilation
+    [npm]/[webpack]/lib/Compiler.js:630:30
+  
+  - Compiler.js:667 
+    [npm]/[webpack]/lib/Compiler.js:667:29
+  
+  
+  - Hook.js:154 AsyncSeriesHook.lazyCompileHook
+    [npm]/[webpack]/[tapable]/lib/Hook.js:154:20
+  
+  - Compiler.js:662 Compiler.compile
+    [npm]/[webpack]/lib/Compiler.js:662:28
+  
+  - Compiler.js:328 Compiler.runAsChild
+    [npm]/[webpack]/lib/Compiler.js:328:8
+  
+  - compiler.js:75 
+    [wp]/[html-webpack-plugin]/lib/compiler.js:75:19
+  
+  - new Promise
+  
+  - compiler.js:74 Object.compileTemplate
+    [wp]/[html-webpack-plugin]/lib/compiler.js:74:10
+  
+  - index.js:71 
+    [wp]/[html-webpack-plugin]/index.js:71:42
+  
+  
+  - Hook.js:154 AsyncParallelHook.lazyCompileHook
+    [npm]/[webpack]/[tapable]/lib/Hook.js:154:20
+  
+  - Compiler.js:669 
+    [npm]/[webpack]/lib/Compiler.js:669:20
+  
+  
+  - Hook.js:154 AsyncSeriesHook.lazyCompileHook
+    [npm]/[webpack]/[tapable]/lib/Hook.js:154:20
+  
+  - Compiler.js:662 Compiler.compile
+    [npm]/[webpack]/lib/Compiler.js:662:28
+  
+  - Compiler.js:321 
+    [npm]/[webpack]/lib/Compiler.js:321:11
+  
+  - Compiler.js:529 Compiler.readRecords
+    [npm]/[webpack]/lib/Compiler.js:529:11
+  
+  - Compiler.js:318 
+    [npm]/[webpack]/lib/Compiler.js:318:10
+  
+  
+  - CachePlugin.js:50 
+    [npm]/[webpack]/lib/CachePlugin.js:50:13
+  
+  
+  - Hook.js:154 AsyncSeriesHook.lazyCompileHook
+    [npm]/[webpack]/[tapable]/lib/Hook.js:154:20
+  
+  - Compiler.js:315 
+    [npm]/[webpack]/lib/Compiler.js:315:19
+  
+</pre><script type="text/javascript" src="index_bundle.js"></script>
